@@ -1,0 +1,24 @@
+{
+  "name": "wth-www",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "private": false,
+    "type": "git",
+    "url": "git://github.com/angelativa/repository.git"
+  },
+  "author": "tiva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angelativa/repository/issues"
+  },
+  "homepage": "https://github.com/angelativa/repository#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp-sass": "^2.3.2"
+  },
+  "description": "my project"
+}
