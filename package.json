@@ -16,9 +16,21 @@
     "url": "https://github.com/angelativa/repository/issues"
   },
   "homepage": "https://github.com/angelativa/repository#readme",
-  "dependencies": {},
+  "dependencies": {
+    "edp": "^1.1.1",
+    "require": "^2.4.20"
+  },
   "devDependencies": {
+    "edp": "^1.1.1",
     "gulp-sass": "^2.3.2"
   },
-  "description": "my project"
+  "description": "my project",
+  "edp": {
+    "wwwroot": "/",
+    "depDir": "dep",
+    "srcDir": "src",
+    "loaderAutoConfig": "js,htm,html,tpl,vm,phtml",
+    "loaderUrl": "http://s1.bdstatic.com/r/www/cache/ecom/esl/1-8-2/esl.js",
+    "dependencies": {}
+  }
 }
