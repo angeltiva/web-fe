@@ -1,0 +1,176 @@
+ 1、多 DOM 节点事件触发时，如何事件代理委托
+    e.stopProPagation
+    e.cancelBubble
+ 2、CCS媒体查询
+    media screen and (min-width: 600px)
+    设置不一样的宽度屏幕的 css 做到自适应
+
+ 3、正则去掉首尾空格
+    function trim(str) {
+        str.replace(/(^\s+)|(\s+$)/, '');
+    }
+ 4、页面性能优化
+    雅虎军规： 减少请求，使用cdn， 减少主机名的数量， 避免跳转 ， 可缓存的AJAX ，  Gizp压缩文件
+       精简JavaScript ， etag， 减少DOM元素数量 ， 为文件头指定Expires或Cache-Control  为文件头指定Expires或Cache-Control 把样式表置于顶部 避免使用CSS表达式（Expression）
+       使用外部JavaScript和CSS 削减JavaScript和CSS 用<link>代替@import 把脚本置于页面底部
+       减少DOM访问 减小Cookie体积 优化图像 打包组件成复合文本
+
+ 5、跨域解决方案
+    跨域问题是因为浏览器的同源策略。当前域名的 js 只能读取同域名下的窗口属性
+    解决跨域问题有以下几种方式： 使用 jsonp 服务端代理 服务端设置 Request Header 头中 Access-Control-Allow-Origin 为指定可获取数据的域名（ie 10 以下是不支持的）
+
+Param()， 将函数值转化为序列化的字符串
+Extend()， 拓展一个对象
+
+Deferred()，允许你自由添加多个回调函数，允许你为多个事件指定一个回调函数，
+就是 jq 的回调函数解决方案。就是延迟到未来的某个点再执行
+$.Deffered() 就是创建一个对象
+defferd.resolve() 马上执行 done
+defferd.reject() 马上执行 fail
+defferd.then() 为了省事把 done 和 fail 合在一起写
+
+SerializeArray() 输出以数组形式序列化表单值的结果
+例如： $('button').click(function () {
+    x = $('form').serializeArray();
+    $.each(x, function () {
+        $('#result').append(field.name + ':' + field.value + " ");
+    });
+});
+sessionStorage 和 localstorage区别
+一个长期有效 一个关闭失效
+
+position（必问）
+    relative
+    absolute
+    static
+    fixed
+
+css 选择符的优先级
+    id 选择符
+    类选择符
+    标签选择符
+    相邻选择符
+    子选择符
+    后代选择符
+    通配符选择符
+    属性选择符
+    伪类选择符
+jsonp
+利用 <script> 标签没有跨域限制的漏洞来达到与第三方通讯的目的
+通信的时候提供一个回调函数来接受数据
+
+数组的前后增加，删除
+unshift
+shift
+push
+pop
+concat
+splice
+reverse
+sort
+slice
+join
+
+数组合并
+concat 方法
+a.push.apply(a, b)
+
+== 和 === 的不同
+ === 要判断类型是不是相同
+ 复合类型是是不是指向同一个对象
+
+
+HTML
+针对移动浏览器端开发页面，不期望用户放大屏幕，且要求“视口（viewport）”宽度等于屏幕宽度，视口高度等于设备高度，如何设置？
+width = device-width
+
+data-xxx 属性的作用是什么？
+
+什么是浏览器的标准模式（standards mode）和怪异模式（quirks mode）
+
+CSS
+解释一下box-model：全部属性，各个属性取值类型，范围，计算值方式，负值作用，box-sizing概念。
+
+BFC(Block Formatting Context)是什么？有哪些应用？
+
+如何要求容器在宽度自由很缩的情况下，A/B/C的宽度始终是1:1:1，如何实现，写出两种方法。
+
+如图，A若宽高已知，如何实现水平、垂直均相对于父元素居中？若A高度未知呢？
+    js 算
+
+JAVASCRIPT
+函数中的 arguments 是什么？是数组吗？若不是，如何将它转化为真正的数组？
+是一个类数组不是数组 [].prototype.slice.apply(arguments)
+
+列举 JavaScript 中 typeof 操作符的可能结果，如何区分：{} 和 [] 类型？
+undefined string number object boolean symbol function
+1 typeof
+2 xxx.instance == array 没有 bool string number
+3 xx.constructor 可能被封装过了
+4 Object.prototype.toString.call()
+5 $.type
+
+Function 中的 call、apply、bind 的区别是什么？请针对每一个写出一个代码示例。
+    都是用来改变函数的 this 对象的指向的
+    第一个参数都是 this 要指向的对象，也就是想指定的上下文
+    三者都可以利用后续参数传参
+    bind 是返回对应的函数，便于稍后调用； apply，call 则是立即调用
+
+for (var i = 0, len = document.getElementsByTagName('a').length; i < len; i++) {
+    var element = document.getElementsByTagName('a')[i];
+    element.onmouseover = function () {
+        this.style.color = 'red';
+    }
+    element.onmouseout = function () {
+        this.style.color = '';
+    }
+}
+
+实现获取jsonp函数
+function addScriptTag(src) {
+    var script = document.createElement('script');
+    script.setAttribute("type", "text/javascript");
+    script.src = src;
+    document.body.appendChild(script);
+}
+window.onload = function () {
+    addScriptTag(src?callback=result);
+}
+function result() {
+
+}
+闭包
+function fn() {
+    var result = new Array();
+    for (var i = 0; i < 10; i++) {
+        result[i] = (function (num) {
+            return function () {
+                return num;
+            }
+        })(i)
+    }
+    return result;
+}
+快速排序
+function quickSort(arr) {
+    var leftArr = [];
+    var rightArr = [];
+    var centerPos = Math.ceil(arr / length);
+    var centerNumber = arr[centerPos];
+    for (var i = 0; i < arr.length; i++) {
+        var item = arr[i];
+        if (item < centerNumber) {
+            leftArr.push(item);
+        }
+        else {
+            rightArr.push(item);
+        }
+    }
+    return quickSort(leftArr).concat([centerNumber], quickSort(rightArr));
+}
+
+正则
+
+amd
+
+
