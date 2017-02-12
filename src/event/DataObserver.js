@@ -4,9 +4,7 @@
  * 所以在每个模块里绑定数据加载完毕的事件，
  * 然后只在一个地方加载数据，加载完后触发数据事件就ok了。
  *
- * @param {HTMLElement} a
- * @param {HTMLElement} b
- * @return {Bool}
+ * @return {Object}
  */
 
 var DataObserver = {

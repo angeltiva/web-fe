@@ -6,15 +6,38 @@
 </head>
 <body>
     <script src="./dep/ractive/0.7.3/ractive.js"></script>
-    <div id='container'></div>
+    <div id='container'>
+        <ul>
+            <li><a href="#/">turn white</a></li>
+            <li><a href="#/blue">turn blue</a></li>
+            <li><a href="#/green">turn green</a></li>
+        </ul>
+
+        <div id="content"></div>
+    </div>
     <script src="./dep/base/0.0.12/src/base.js"></script>
     <script>
-        require.config({
-            baseUrl: '/src'
-        });
+        (function () {
+            var config = require.config({
+                baseUrl: '/src'
+            });
+
+            var baseUrl = location.protocol + '//' + location.host + config.baseUrl;
+
+            require.config({
+                baseUrl: baseUrl
+            });
+        })();
+
+        require(
+            [
+                'router'
+            ],
+            function (main) {
+                main.init();
+            }
+        )
     </script>
 
-    <script src="./src/index.js">
-    </script>
 </body>
 </html>
