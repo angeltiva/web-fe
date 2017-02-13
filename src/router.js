@@ -143,12 +143,23 @@ define(function (require, exports) {
                 var name = paramsOptions.name;
                 var component = this.routes[name];
                 if ($.isFunction(component)) {
+                    var me = this;
                     var instance = new Ractive({
                         el: '#content',
                         data: paramsOptions,
                         template: '<Router data="{{paramsOptions}}" />',
                         components: {
                             Router: component
+                        },
+                        onrender: function () {
+                            var component = this.findComponent('Router');
+                            if ($.isFunction(component.reroute)) {
+                                if (me.paths.length <= 1) {
+                                    return;
+                                }
+
+                                component.reroute(me.currentUrl, me.paths[me.paths.length - 2]);
+                            }
                         }
                     });
                 }

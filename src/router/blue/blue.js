@@ -10,7 +10,10 @@ define(function (require, exports) {
             }
         },
         onrender: function () {
-            console.log(this.get('a'))
+        },
+        reroute: function (currentUrl, oldUrl) {
+            console.log(currentUrl);
+            console.log(oldUrl);
         }
     });
 
