@@ -5,6 +5,7 @@ define(function (require, exports) {
 
     var PREFIX_HASH = '#!';
     var PREFIX_PARAM = ':';
+    var PREFIX_QUERY = '?';
     var SEPARATOR_PATH = '/';
     var SEPARATOR_QUERY = '&';
     var SEPARATOR_PAIR = '=';
@@ -14,31 +15,77 @@ define(function (require, exports) {
     var white = require('router/white/white');
     var green = require('router/green/green');
 
-    function parseQuery(query) {
+    function getHashString(query) {
         if (!query) {
             return;
         }
-        query = decodeURIComponent(query);
+        var decodeQuery = decodeURIComponent(query);
+        var prefixIndex = decodeQuery.indexOf('#!');
+        var index = prefixIndex + PREFIX_HASH.length;
+
+        return decodeQuery.substr(+index);
+    }
+
+    function parseQuery(data) {
+        data = getHashString(data);
+        var query;
         var result = {};
+
+        if (/\?/.test(data)) {
+            var item = data.split('?');
+            result['name'] = item[0];
+            query = item[1];
+        }
+        else {
+            result['name'] = data;
+        }
+
+        if (!query) {
+            return result;
+        }
+
         $.each(
             query.split('&'),
             function (index, value) {
                 var item = value.split('=');
-                result[item[0]] = item[1];
+                var key = item[0];
+                if (/\[]/.test(key)) {
+                    var arrName = key.split('[]')[0];
+                    result[arrName] = result[arrName] || [];
+                    result[arrName].push(item[1]);
+                }
+                else {
+                    result[key] = item[1];
+                }
             }
         );
         return result;
     }
 
-    function stringifyQuery(query) {
-        if (!query) {
+    function stringifyQuery(data) {
+        if (!data) {
             return;
         }
         var result = [];
         $.each(
-            query,
+            data,
             function (key, value) {
-                result.push(key + '=' + value);
+                if ($.isArray(value)) {
+                    if (!value.length) {
+                        result.push(key + FLAG_ARRAY + SEPARATOR_PAIR + value);
+                    }
+                    else {
+                        $.each(
+                            value,
+                            function (index, item) {
+                                result.push(key + FLAG_ARRAY + SEPARATOR_PAIR + item);
+                            }
+                        );
+                    }
+                }
+                else {
+                    result.push(key + SEPARATOR_PAIR + value);
+                }
             }
         );
         return result.join('&');
@@ -59,21 +106,39 @@ define(function (require, exports) {
             }
 
             route(data) {
-                // route(path)
+                var name;
+                var paramsOptions = {};
                 if (typeof data == "string") {
-                    location.hash = data;
+                    name = data;
+                    location.hash = PREFIX_HASH + data;
                 }
                 else {
-                    location.hash = stringifyQuery(data);
+                    if (!data.name) {
+                        console.error('没有组件名');
+                    }
+                    name = data.name;
+                    paramsOptions = data.query;
+                    var hash = name + PREFIX_QUERY + stringifyQuery(data.query);
+                    location.hash = PREFIX_HASH + hash;
                 }
-                var component = this.routes[data];
-                component.init();
+
+                var component = this.routes[name];
+                if ($.isFunction(component)) {
+                    var instance = new Ractive({
+                        el: '#content',
+                        data: paramsOptions,
+                        template: '<Router data="{{paramsOptions}}" />',
+                        components: {
+                            Router: component
+                        }
+                    });
+                }
             }
 
             onhashchange() {
-                this.currentUrl = location.hash.slice(1) || '/';
-                this.route(this.currentUrl);
-                this.setComponent(location.hash);
+                this.currentUrl = location.hash || SEPARATOR_PATH;
+                var name = parseQuery(this.currentUrl).name;
+                this.setComponent(name);
             }
 
             setComponent(data) {
@@ -83,6 +148,7 @@ define(function (require, exports) {
 
             start() {
                 router.handleHashChange = this.onhashchange.bind(this);
+                window.addEventListener('load', router.handleHashChange, false);
                 window.addEventListener('hashchange', router.handleHashChange, false);
             }
 
@@ -110,12 +176,21 @@ define(function (require, exports) {
             },
             blueClick: function () {
                 console.log('blueClick');
-                Router.route('blue');
+                Router.route({
+                    name: 'blue',
+                    query: {
+                        videoId: 13,
+                        parentId: 16
+                    }
+                });
             },
             greenClick: function () {
                 console.log('greenClick');
                 Router.route({
-                    green
+                    name: 'green',
+                    query: {
+                        videoId: 12
+                    }
                 });
             }
         });

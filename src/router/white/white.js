@@ -2,16 +2,16 @@ define(function (require, exports) {
 
     'use strict';
 
-    exports.init = function (data) {
+    return Ractive.extend({
+        template: require('tpl!./white.html'),
+        data: function () {
+            return {
+                name: 'white'
+            };
+        },
+        onrender: function () {
 
-        var ractive = new Ractive({
-            el: '#content',
-            template: require('tpl!./white.html'),
-            data: {},
-            onrender: function () {
-
-            }
-        });
-    }
+        }
+    });
 
 })
