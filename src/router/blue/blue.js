@@ -10,7 +10,7 @@ define(function (require, exports) {
             }
         },
         onrender: function () {
-
+            console.log(this.get('a'))
         }
     });
 

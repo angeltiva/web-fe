@@ -98,6 +98,7 @@ define(function (require, exports) {
             constructor() {
                 // 映射关系
                 this.routes = {};
+                this.paths = [];
                 this.currentUrl = '';
             }
 
@@ -107,7 +108,6 @@ define(function (require, exports) {
 
             route(data) {
                 var name;
-                var paramsOptions = {};
                 if (typeof data == "string") {
                     name = data;
                     location.hash = PREFIX_HASH + data;
@@ -117,11 +117,30 @@ define(function (require, exports) {
                         console.error('没有组件名');
                     }
                     name = data.name;
-                    paramsOptions = data.query;
                     var hash = name + PREFIX_QUERY + stringifyQuery(data.query);
                     location.hash = PREFIX_HASH + hash;
                 }
+            }
 
+            onhashchange() {
+                this.currentUrl = location.hash || SEPARATOR_PATH;
+                this.addPath(this.currentUrl);
+                this.setComponent(this.currentUrl);
+            }
+
+            addPath(path) {
+                if (this.paths.length > 10) {
+                    this.paths.shift();
+                    this.paths.push(path);
+                }
+                else {
+                    this.paths.push(path);
+                }
+            }
+
+            setComponent(data) {
+                var paramsOptions = parseQuery(data);
+                var name = paramsOptions.name;
                 var component = this.routes[name];
                 if ($.isFunction(component)) {
                     var instance = new Ractive({
@@ -135,20 +154,9 @@ define(function (require, exports) {
                 }
             }
 
-            onhashchange() {
-                this.currentUrl = location.hash || SEPARATOR_PATH;
-                var name = parseQuery(this.currentUrl).name;
-                this.setComponent(name);
-            }
-
-            setComponent(data) {
-                var createComponent = function () {};
-                var changeComponent = function () {};
-            }
-
             start() {
                 router.handleHashChange = this.onhashchange.bind(this);
-                window.addEventListener('load', router.handleHashChange, false);
+                router.handleHashChange();
                 window.addEventListener('hashchange', router.handleHashChange, false);
             }
 
@@ -159,6 +167,9 @@ define(function (require, exports) {
         }
 
         window.Router = new router();
+        Router.registor('blue', blue);
+        Router.registor('white', white);
+        Router.registor('green', green);
         window.Router.start();
 
         var ractive = new Ractive({
@@ -166,9 +177,6 @@ define(function (require, exports) {
             template: require('tpl!./test.html'),
             onrender: function () {
                 var me = this;
-                Router.registor('blue', blue);
-                Router.registor('white', white);
-                Router.registor('green', green);
             },
             whiteClick: function () {
                 console.log('whiteClick');
@@ -180,7 +188,8 @@ define(function (require, exports) {
                     name: 'blue',
                     query: {
                         videoId: 13,
-                        parentId: 16
+                        parentId: 16,
+                        a: [1,21,21]
                     }
                 });
             },
