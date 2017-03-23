@@ -19,11 +19,10 @@ define(function (require, exports) {
         if (!query) {
             return;
         }
-        var decodeQuery = decodeURIComponent(query);
-        var prefixIndex = decodeQuery.indexOf('#!');
+        var prefixIndex = query.indexOf(PREFIX_HASH);
         var index = prefixIndex + PREFIX_HASH.length;
 
-        return decodeQuery.substr(+index);
+        return query.substr(+index);
     }
 
     function parseQuery(data) {
@@ -108,7 +107,7 @@ define(function (require, exports) {
 
             route(data) {
                 var name;
-                if (typeof data == "string") {
+                if (typeof data == 'string') {
                     name = data;
                     location.hash = PREFIX_HASH + data;
                 }
